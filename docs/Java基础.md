@@ -1,4 +1,4 @@
-#### 基础
+# 基础
 
 **1.八种基本数据类型是什么？他们的包装类型是什么？各占多少个字节？**
 - byte Byte 1个字节、short Short 2个字节、int Integer 4个字节、long Long 8个字节、float Float 4个字节、double Double 8个字节、char Character 2个字节、boolean Boolean 1位
@@ -43,7 +43,7 @@
 - throws用在方法上，后面跟的是异常类，可以跟多个；而throw用在方法内，后面跟的是异常对象。
 
 
-#### 集合
+# 集合
 
 **1.说说你了解的集合**
 - 集合从大的方向分有两个，一是Collection集合，二是Map集合。
@@ -122,7 +122,7 @@
 - HashMap允许空键值，HashTable不允许。
 - HashMap线程不安全（效率高），HashTable线程安全。
 
-#### 多线程
+# 多线程
 
 **1.说说你知道的创建线程的方式**
 - 1、继承Thread类，重写run方法。2、实现Runnable接口，重写run方法。3、实现Callable接口，重写call方法。4、通过线程池创建线程。
@@ -167,6 +167,6 @@
 - 不了解，回家等通知吧，了解的私聊我，我们一起探讨一下【贺贺学编程】
 
 
-#### JVM
+# JVM
 
 **更新中...**
