@@ -124,6 +124,49 @@
 
 #### 多线程
 
+**1.说说你知道的创建线程的方式**
+- 1、继承Thread类，重写run方法。2、实现Runnable接口，重写run方法。3、实现Callable接口，重写call方法。4、通过线程池创建线程。
+
+**2.说说Runnable和Callable的区别**
+- Callable可以返回一个类型V，而Runnable不可以。Callable能够抛出checked exception,而Runnable不可以。
+- Future和FutureTask留给你们！我放GitHub上了（uphe）
+
+**3.说说通过线方程池创建线程的式**
+- `Executors.newCachedThreadPool();`创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
+- `Executors.newFixedThreadPool(10);`创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待。
+- `Executors.newScheduledThreadPool(10);`创建一个定长线程池，支持定时及周期性任务执行。
+- `Executors.newSingleThreadExecutor();`创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，保证所有任务按照指定顺序(FIFO, LIFO, 优先级)执行。
+- 阿里巴巴开发手册上不推荐上面的创建方式，创建线程池推荐用ThreadPoolExecutor，其中ThreadPoolExecutor有七大参数，四大拒绝策略。
+- 1、int corePoolSize 核心线程池大小。2、int maximumPoolSize 最大核心线程池大小。3、long keepAliveTime 超时存活时间。4、TimeUnit unit 超时单位。5、BlockingQueue<Runnable> workQueue 阻塞队列。6、ThreadFactory threadFactory 线程工厂，用于创建线程。7、RejectedExecutionHandler handler 拒绝策略。
+- 四大拒绝策略，这里通过银行办理业务的例子进行说明。 1、AbortPolicy()); 银行满了还有人进来，不处理，抛出异常（默认）。2、CallerRunsPolicy(); 银行满了，不处理，哪里来的去哪里，一般抛给main线程。3、DiscardPolicy(); 银行满了，把该线程丢掉，不抛异常。4、DiscardOldestPolicy(); 银行满了，会和先来的线程竞争，不抛异常。
+
+**4.最大线程数是如何确定的呢**
+- 一般有两种策略CPU密集型和IO密集型，所谓CPU密集型，也就是，几核的CPU就定义为几，我的是八核，所以定义为8，`Runtime.getRuntime().availableProcessors();` 获取CPU的核数，IO密集型，就是判断程序中有多少个非常耗IO线程的程序，最大线程池的大小要大于这个值即可。
+
+**5.说说synchronized和Lock的区别**
+- 1、synchronized是关键字，Lock是类。2、synchronized无法获取锁的状态，Lock可以。3、synchronized会自动释放锁，Lock需要手动。4、synchronized没有Lock锁灵活（Lock锁可以自己定制）。
+
+**6.说说ReentrantLock的应用场景**
+- 1、ReentrantLock默认是非公平锁，但它可以设置公平锁，也就是谁先来的谁先获得锁new ReentrantLock(true)。2、ReentrantLock可以响应中断，也就是当两个线程发生死锁的时候，你把A线程中断了，B线程可以正常运行。3、ReentrantLock可以通过tryLock()实现限时等待，这样可以解决死锁问题。
+
+**7.synchronized锁的优化了解吗**
+- synchronized在JDK1.6进行了锁的优化，也就是当一个线程多次访问一个同步代码块的时候，此时会记录该线程的threadId也就是，当你再来访问的时候，我就只需判断threadId就行了，效率高，这属于偏向锁。
+- 当有多个线程来的时候，那么这个锁就会升级为轻量级锁，也就是通过CAS，来进行尝试获取锁，是一种自旋锁的状态。如果在短时间内可以获得锁，不会堵塞，而且节约了CUP上下文切换的时间。
+- 如果长时间没有获取到锁，会消耗CUP的资源，因为在那一直死循环，经过一个时间段后会升级为重量级锁，会发生阻塞。其中锁升级是不可逆的。
+
+**8.说说对volatile关键字的理解**
+- 三大特性保证可见性，不保证原子性，禁止指令重排。
+- 在说volatile之前，需要讲解一个东西，Java内存模型（Java Memory Model，JMM），当线程读取内存中的一个变量时，会先把这个变量拷贝到CPU的高速缓存区，然后对其进行操作，操作完成后，会把该变量写入到内存中。在单线程中是不会出现任何问题的，但是在多线程中就会有问题，当线程1读取了该变量a=1到缓存区进行了加1操作，还没写到内存中，线程2读取了内存中的变量a=1也进行加1操作，然后线程1写入内存a=2，线程2也写入a=2到内存，那么最后，该变量的值是2，而不是3（出现了线程安全问题）。
+- 我们想要当线程1进行了加1操作之后，让线程2知道，这就是volatile的作用了，可以保证可见性，也就是，当线程1对a变量进行了加1操作，会直接写入到内存中（立即马上），并且通知线程2，变量被修改了，要求线程2缓冲区的值去内存中重新读取。但是，加1操作不是原子性的（三步，首先读取a变量的值，然后对其进行加1操作，然后赋值给a），也就是说，当线程1读取a变量到缓冲区后，还没有修改a的值，此时线程2进来了，读取了a的值，并且对其进行了加1操作，由于可见性，会把线程1缓冲区的值进行修改，但是，线程1中的CPU已经读取了缓冲区的值，而且是更新前的值，所以出现了线程安全问题，也是volatile不保证原子性的问题。于是就需要加1操作是原子性操作，于是就有了一个automic包，通过该包下的方法，可以实现加1的原子性操作（还有其他原子性操作）。
+- 所谓指令重排，也就是在不影响单线程程序程序结果的情况下进行最优执行排序
+
+**9.那你说说CAS吧**
+- CAS（Compare And Swap，比较并交换），如果我们想要修改某个值num，那么我们可以通过一个方法compareAndSet(5,6)意思是，我们期望num的值是5，如果是，就修改为6。但是这就会有一个问题，我们期望的num是5，如果有其他线程把5修改为了8，然后又修改为了5，最终是5，但是已经被修改过一次了，这就是ABA问题。我们可以通过AtomicStampedReference，也就是原子引用，在创建的时候，有一个印记，相当于版本号，每被修改一次，版本号都被更新，所以，当出现ABA问题的时候，我们就可以清楚的知道，被修改了多少次。
+
+**10.AQS了解吗**
+- 不了解，回家等通知吧，了解的私聊我，我们一起探讨一下【贺贺学编程】
+
+
 #### JVM
 
 **更新中...**
