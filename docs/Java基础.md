@@ -1,4 +1,4 @@
-# 基础
+# 语法
 
 **1.八种基本数据类型是什么？他们的包装类型是什么？各占多少个字节？**
 - byte Byte 1个字节、short Short 2个字节、int Integer 4个字节、long Long 8个字节、float Float 4个字节、double Double 8个字节、char Character 2个字节、boolean Boolean 1位
@@ -40,8 +40,8 @@
 - NIO：Non IO 同步非阻塞 IO，是传统 IO 的升级，客户端和服务器端通过 Channel（通道）通讯，实现了多路复用。
 - AIO：Asynchronous IO 是 NIO 的升级，也叫 NIO2，实现了异步非堵塞 IO ，异步 IO 的操作基于事件和回调机制。
 
-**11.throw和throws的区别**
-- throws用在方法上，后面跟的是异常类，可以跟多个；而throw用在方法内，后面跟的是异常对象。
+**11.说说Object类的常用方法**
+- 1、clone() 创建并返回此对象的副本。2、equals(Object obj) 指示一些其他对象是否等于此。3、getClass() 返回此 Object的运行时类。4、hashCode() 返回对象的哈希码值。5、notify() 唤醒正在等待对象监视器的单个线程。6、notifyAll() 唤醒正在等待对象监视器的所有线程。7、toString() 返回对象的字符串表示形式。 8、wait() 导致当前线程等待，直到另一个线程调用该对象的 notify()方法或 notifyAll()方法。 
 
 **12.JDK、JRE、JVM三者之间的联系与区别**
 - JDK(Java SE Development Kit)，Java标准开发包，它提供了编译、运行Java程序所需的各种工具和资源，包括Java编译器、Java运行时环境，以及常用的Java类库等。
@@ -65,9 +65,34 @@
 **16.++i和i++的区别**
 - ++i是先加再用（例如i=2，那么++i的值就是3），i++是先用再加（例如i=2，那么i++的值也是2）。
 
-**17.说说Object类的常用方法**
-- 1、clone() 创建并返回此对象的副本。2、equals(Object obj) 指示一些其他对象是否等于此。3、getClass() 返回此 Object的运行时类。4、hashCode() 返回对象的哈希码值。5、notify() 唤醒正在等待对象监视器的单个线程。6、notifyAll() 唤醒正在等待对象监视器的所有线程。7、toString() 返回对象的字符串表示形式。 8、wait() 导致当前线程等待，直到另一个线程调用该对象的 notify()方法或 notifyAll()方法。 
+# 异常
 
+**1.Error和Exception的区别**
+- Error 是程序并没有执行而产生的，表示系统级的错误，是 java 运行环境内部错误或者硬件问题，不能指望程序来处理这样的问题，它是 java 虚拟机抛出的。
+- Exception 是程序运行过程中产生的，表示程序需要捕捉、需要处理的异常，是由于程序设计的不完善而出现的问题，程序可以处理的问题。
+
+**2.throw和throws的区别**
+- throws用在方法上，后面跟的是异常类，可以跟多个；而throw用在方法内，后面跟的是异常对象。
+
+**3.finally 块一定会执行吗**
+- 不一定，当在 try 块或者 catch 块中有 System.exit(0)，这样的语句存在时 finally 块就不会被执行到了，因为程序被结束了。
+- 当在 try 块或者 catch 块里 return 时 finally 会被执行；执行顺序是，当碰到try或者catch中的return时，会去执行finally中的语句，如果finally中有return，那么就直接return，如果没有，那就执行try或者catch中的return。
+
+**4.try、catch、finally中哪个部分可以省略**
+- 如果try了，也就是捕获了异常，那么必须进行catch或者finally来处理异常，所以catch或finally可以省略，但不能同时省略。
+
+# 反射
+**1.什么是反射**
+- 反射是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取的信息以及动态调用对象方法的功能称为 Java 语言的反射机制。
+
+**2.Java中反射的作用**
+- 通过反射可以获取Class模板（该模板可以获取对象，构造方法，成员方法，属性等）：1、Class.forName("全限类名");2、类名.class;3、对象.getClass();
+- 通过Class模板.newInstance();可以获取对象。
+
+
+# 注解
+
+# 文件和IO流
 
 # 集合
 
