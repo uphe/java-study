@@ -91,6 +91,14 @@
 
 
 # 注解
+**1.Java中有哪写元注解**
+- @Target：注解作用的目标。在可选值在一个枚举类ElementType【TYPE：类，接口声明。METHOD：方法声明。CONSTRUCTOR：构造器声明。FIELD：成员变量的声明。PACKAGE：包的声明。PARAMETER：参数的声明。LOCAL_VARIABLE：局部变量的声明】。
+- @Retention：表示在什么级别保存该注解信息，用于描述保存该注解的生命周期。可选值在枚举类型 RetentionPolicy【SOURCE：注解仅存在于原码中，在class字节码文件中不包含。CLASS：注解在class字节码文件中，运行时无法获得。RUNTIME：注解在class文件中存在，运行时可以通过反射机制获取】。
+- @Documented：将此注解包含在 javadoc 中，它代表着此注解会被javadoc工具提取成文档。
+- @Inherited：允许子类继承父类中的注解。
+
+**2.注解的作用**
+- 它不是程序，但是可以对程序做出解释，可以被其他程序（如编译器）读取
 
 # IO流
 
